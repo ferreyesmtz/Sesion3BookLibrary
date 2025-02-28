@@ -1,4 +1,12 @@
 # Sesion 3 - Book Library
+
+Iker Rolando Casillas Parra  | A01641047 
+César Simental Dueñas | A01641385
+Andrea Guadalupe Blanco Rubio | A01737220
+Fernanda Reyes Martínez | A01637163
+Alexei Delgado De Gante  A01637405
+Martín Rivera Ahumada | A01749620
+
 The Library Management System is a Java-based console application designed to assist librarians and library staff in managing their library's collection of books. This program provides a simple interface for performing essential operations related to the management of books, patrons, and borrowing activities.
 
 Key Features
