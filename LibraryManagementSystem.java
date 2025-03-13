@@ -69,8 +69,16 @@ public class LibraryManagementSystem {
         }
 
         public String getNombre() { return nombre; }
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+
         public String getId() { return id; }
         public String getContacto() { return contacto; }
+
+        public void setContacto(String contacto) {
+            this.contacto = contacto;
+        }
 
         @Override
         public String toString() {
@@ -162,6 +170,12 @@ public class LibraryManagementSystem {
             }
         }
 
+        public void editarUsuario(Usuario usuario, String nombre, String contacto) {
+
+            usuario.setNombre(nombre);
+            usuario.setContacto(contacto);
+        }
+
         // Gestion de Prestamos
         public void prestarLibro(String usuarioId, String isbn) {
             Usuario usuario = buscarUsuarioPorId(usuarioId);
@@ -249,6 +263,30 @@ public class LibraryManagementSystem {
             }
             return null;
         }
+
+        // Método para obtener los libros prestados por un usuario
+        public void mostrarLibrosPrestadosPorUsuario(String usuarioId) {
+            Usuario usuario = buscarUsuarioPorId(usuarioId);
+            if (usuario == null) {
+                System.out.println("Usuario no encontrado.");
+                return;
+            }
+            List<Libro> librosPrestados = new ArrayList<>();
+            for (RegistroPrestamo registro : registrosPrestamo) {
+                if (registro.getUsuario().getId().equals(usuarioId)) {
+                    librosPrestados.add(registro.getLibro());
+                }
+            }
+            if (librosPrestados.isEmpty()) {
+                System.out.println("El usuario no tiene libros prestados.");
+            } else {
+                System.out.println("Libros prestados por " + usuario.getNombre() + ":");
+                for (Libro libro : librosPrestados) {
+                    System.out.println(libro);
+                }
+                System.out.println("Total de libros prestados: " + librosPrestados.size());
+            }
+        }
     }
 
     // Metodo principal con menu interactivo
@@ -266,11 +304,14 @@ public class LibraryManagementSystem {
             System.out.println("4. Editar Libro");
             System.out.println("5. Registrar Usuario");
             System.out.println("6. Mostrar Usuarios");
-            System.out.println("7. Prestar Libro");
-            System.out.println("8. Devolver Libro");
-            System.out.println("9. Buscar Libro por Titulo");
-            System.out.println("10. Buscar Libro por Autor");
-            System.out.println("11. Salir");
+            System.out.println("7. Editar Usuario");
+            System.out.println("8. Prestar Libro");
+            System.out.println("9. Devolver Libro");
+            System.out.println("10. Libros por Usuario");
+            System.out.println("11. Buscar Libro por Titulo");
+            System.out.println("12. Buscar Libro por Autor");
+            System.out.println("13. Buscar Libro por ISBN");
+            System.out.println("14. Salir");
             System.out.print("Ingrese su opcion: ");
             opcion = sc.nextInt();
             sc.nextLine(); // consumir nueva linea
@@ -342,21 +383,52 @@ public class LibraryManagementSystem {
                 case 6:
                     biblioteca.mostrarUsuarios();
                     break;
+                
                 case 7:
+                    System.out.println("Ingrese el ID del usuario: ");
+                    String UsuarioID = sc.nextLine();
+                    Usuario usuario_edicion = biblioteca.buscarUsuarioPorId(UsuarioID);
+                
+                    if (usuario_edicion != null) {
+                        System.out.println("Nombre (Enter para no modificar): " + usuario_edicion.getNombre() );
+                        String nuevo_nombre = sc.nextLine();
+                        if (nuevo_nombre.equals("")) {
+                            nuevo_nombre = usuario_edicion.getNombre();
+                        }
+
+                        System.out.println("Contacto (Enter para no modificar): " + usuario_edicion.getContacto() );
+                        String nuevo_contacto = sc.nextLine();
+                        if (nuevo_contacto.equals("")) {
+                            nuevo_contacto = usuario_edicion.getContacto();
+                        }
+
+                        biblioteca.editarUsuario(usuario_edicion,nuevo_nombre, nuevo_contacto);
+
+                    } else {
+                        System.out.println("Usuario no encontrado");
+                    }
+                    break;
+
+                case 8:
                     System.out.print("Ingrese el ID del usuario: ");
                     String idUsuario = sc.nextLine();
                     System.out.print("Ingrese el ISBN del libro a prestar: ");
                     String isbnPrestar = sc.nextLine();
                     biblioteca.prestarLibro(idUsuario, isbnPrestar);
                     break;
-                case 8:
+                case 9:
                     System.out.print("Ingrese el ID del usuario: ");
                     String idUsuarioDevolver = sc.nextLine();
                     System.out.print("Ingrese el ISBN del libro a devolver: ");
                     String isbnDevolver = sc.nextLine();
                     biblioteca.devolverLibro(idUsuarioDevolver, isbnDevolver);
                     break;
-                case 9:
+                case 10:
+                    System.out.print("Ingrese el ID del usuario: ");
+                    String idUsuarioLibros = sc.nextLine();
+                    biblioteca.mostrarLibrosPrestadosPorUsuario(idUsuarioLibros);
+                    break;
+                case 11:
                     System.out.print("Ingrese el titulo del libro a buscar: ");
                     String tituloBuscar = sc.nextLine();
                     Libro libroEncontrado = biblioteca.buscarLibroPorTitulo(tituloBuscar);
@@ -366,7 +438,7 @@ public class LibraryManagementSystem {
                         System.out.println("Libro no encontrado.");
                     }
                     break;
-                case 10:
+                case 12:
                     System.out.print("Ingrese el autor del libro a buscar: ");
                     String autorBuscar = sc.nextLine();
                     List<Libro> librosEncontrados = biblioteca.buscarLibroPorAutor(autorBuscar);
@@ -379,13 +451,25 @@ public class LibraryManagementSystem {
                         System.out.println("No se encontraron libros para este autor.");
                     }
                     break;
-                case 11:
+                case 13:
+                    System.err.println("Ingrese el ISBN del libro a buscar: ");
+                    String isbnBuscar = sc.nextLine();
+                    Libro libroBuscado = biblioteca.buscarLibroPorISBN(isbnBuscar);
+
+                    if (libroBuscado != null){
+                        System.err.println(libroBuscado);
+                    } else {
+                        System.err.println("Libro no encontrado");
+                    }
+                    break;
+                case 14:
                     System.out.println("Saliendo del sistema. Hasta luego!");
                     break;
+                
                 default:
                     System.out.println("Opcion invalida. Intente nuevamente.");
             }
-        } while(opcion != 11);
+        } while(opcion != 14);
         sc.close();
     }
 }
