@@ -78,16 +78,5 @@ public class LibraryController {
         return libraryService.bookExists(id);
     }
 
-    // Obtener el número total de libros
-    @GetMapping("/count")
-    public long getTotalBooksCount() {
-        return libraryService.getTotalBooksCount();
-    }
 
-    // Limpiar todos los libros
-    @DeleteMapping("/clear")
-    public String clearAllBooks() {
-        libraryService.clearAllBooks();
-        return "All books have been cleared";
-    }
 }
