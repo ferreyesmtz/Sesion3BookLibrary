@@ -7,6 +7,18 @@ Fernanda Reyes Martínez | A01637163 <br />
 Alexei Delgado De Gante  A01637405 <br />
 Martín Rivera Ahumada | A01749620 <br />
 
+## Notes
+**Deliverable#1 (Java Development)**
+Es ejecutando el archivo LibraryManagementSystem.java
+
+
+**Deliverable#1 (Advanced Web)**
+Para backend es ejecutando el servidor de java en la dirección /react-front-end/demo 
+`mvn spring-boot:run`
+Para frontend
+`npm run`
+
+
 The Library Management System is a Java-based console application designed to assist librarians and library staff in managing their library's collection of books. This program provides a simple interface for performing essential operations related to the management of books, patrons, and borrowing activities.
 
 Key Features
@@ -49,3 +61,5 @@ and displaying output in a console application.
 Internal• Basic Algorithm Design: Students will implement algorithms for searching,
 adding, and removing items from collections, enhancing their problem-solving
 skills.
+
+
