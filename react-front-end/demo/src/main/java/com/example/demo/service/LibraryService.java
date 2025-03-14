@@ -1,94 +1,59 @@
 package com.example.demo.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Book;
+import com.example.demo.repository.BookRepository;
 
 @Service
 public class LibraryService {
 
-    // Lista simulada de libros en memoria
-    private List<Book> books = new ArrayList<>();
+    @Autowired
+    private BookRepository bookRepository;
 
-    // Agregar un libro
     public Book addBook(Book book) {
-        books.add(book);
-        return book;
+        return bookRepository.save(book);
     }
 
-    // Obtener todos los libros
     public List<Book> getAllBooks() {
-        return books;
+        return bookRepository.findAll();
     }
 
-    // Obtener un libro por su id
     public Optional<Book> getBookById(Long id) {
-        return books.stream().filter(book -> book.getId().equals(id)).findFirst();
+        return bookRepository.findById(id);
     }
 
-    // Actualizar un libro
     public Optional<Book> updateBook(Long id, Book updatedBook) {
-        Optional<Book> bookOpt = getBookById(id);
-        if (bookOpt.isPresent()) {
-            Book book = bookOpt.get();
+        return bookRepository.findById(id).map(book -> {
             book.setTitle(updatedBook.getTitle());
             book.setAuthor(updatedBook.getAuthor());
             book.setIsbn(updatedBook.getIsbn());
             book.setStock(updatedBook.getStock());
-            return Optional.of(book);
-        }
-        return Optional.empty();
+            return bookRepository.save(book);
+        });
     }
 
-    // Eliminar un libro
     public boolean deleteBook(Long id) {
-        return books.removeIf(book -> book.getId().equals(id));
+        if (bookRepository.existsById(id)) {
+            bookRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
-    // Buscar libros por autor
     public List<Book> getBooksByAuthor(String author) {
-        List<Book> result = new ArrayList<>();
-        for (Book book : books) {
-            if (book.getAuthor().equalsIgnoreCase(author)) {
-                result.add(book);
-            }
-        }
-        return result;
+        return bookRepository.findByAuthorIgnoreCase(author);
     }
 
-    // Buscar libros por título
     public List<Book> getBooksByTitle(String title) {
-        List<Book> result = new ArrayList<>();
-        for (Book book : books) {
-            if (book.getTitle().equalsIgnoreCase(title)) {
-                result.add(book);
-            }
-        }
-        return result;
+        return bookRepository.findByTitleIgnoreCase(title);
     }
 
-    
-    // Verificar si un libro existe
     public boolean bookExists(Long id) {
-        return books.stream().anyMatch(book -> book.getId().equals(id));
-    }
-
-    // Obtener el número total de copias de un libro
-    public int getBookStock(Long id) {
-        Optional<Book> bookOpt = getBookById(id);
-        if (bookOpt.isPresent()) {
-            return bookOpt.get().getAvailableStock();
-        }
-        return 0;
-    }
-    
-
-    // Limpiar todos los libros
-    public void clearAllBooks() {
-        books.clear();
+        return bookRepository.existsById(id);
     }
 }
